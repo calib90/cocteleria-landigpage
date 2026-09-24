@@ -584,24 +584,18 @@ html[data-lang="en"] [data-es-only]{display:none;}
         <!--
           PAST WORK CARDS — hardcoded on purpose (no extra fetch call, loads
           instantly). Add one of these per restaurant/venue once you've
-          stopped actively managing their menu. This section is hidden by
-          default (see ADMIN_SECTIONS / applyVisibilityMap's defaults below)
-          until it has at least one real card — turn it on from the admin
-          panel once you add the first one.
-
-          Copy this block and fill in the photo URL, name and blurb:
-
+          stopped actively managing their menu. Copy the block below and
+          fill in the photo path, name and blurb for the next one.
+        -->
         <article class="portfolio-card">
-          <div class="portfolio-card__photo" style="background-image:url('PASTE_PHOTO_URL_HERE')">
+          <div class="portfolio-card__photo" style="background-image:url('portfolio/la-fundacion-cover.jpg');background-position:top center;">
             <span class="portfolio-card__badge" data-es="Proyecto Anterior" data-en="Past Project">Proyecto Anterior</span>
           </div>
           <div class="portfolio-card__body">
-            <h3>Trattoria di Nonna</h3>
-            <p data-es="Descripción breve de lo que creaste ahí." data-en="Short description of what you built there.">Descripción breve de lo que creaste ahí.</p>
+            <h3>La Fundación</h3>
+            <p data-es="El menú original de La Fundación, mi antigua cantina en Mayagüez." data-en="The original menu from La Fundación, my former cantina in Mayagüez.">El menú original de La Fundación, mi antigua cantina en Mayagüez.</p>
           </div>
         </article>
-
-        -->
       </div>
     </div>
   </section>
@@ -855,8 +849,8 @@ html[data-lang="en"] [data-es-only]{display:none;}
     applyVisibilityMap(stored);
   }
   function applyVisibilityMap(stored){
-    // Community Gallery and Portfolio default OFF until there's real content; everything else defaults ON.
-    var defaults = { gallery: false, portfolio: false };
+    // Community Gallery defaults OFF until real photos exist; everything else defaults ON.
+    var defaults = { gallery: false };
     document.querySelectorAll('[data-admin-section]').forEach(function(section){
       var key = section.getAttribute('data-admin-section');
       var visible = Object.prototype.hasOwnProperty.call(stored, key) ? stored[key] : (defaults[key] !== false);
@@ -872,7 +866,7 @@ html[data-lang="en"] [data-es-only]{display:none;}
     { id:'experiences', label:'Experiencias de Huéspedes', desc:'Historias de huéspedes en su propia voz.' },
     { id:'gallery',     label:'Galería de la Comunidad',   desc:'Vacía por ahora — oculta hasta tener fotos reales.' },
     { id:'menu',        label:'Menú',                      desc:'Bloque que enlaza al menú digital.' },
-    { id:'portfolio',   label:'Trabajos Anteriores',       desc:'Vacío por ahora — activa cuando agregues la primera tarjeta.' },
+    { id:'portfolio',   label:'Trabajos Anteriores',       desc:'Tarjetas de restaurantes/proyectos pasados (ej. Trattoria di Nonna).' },
     { id:'social-instagram', label:'Instagram',           desc:'Tarjeta de Instagram en Redes Sociales.' },
     { id:'social-tiktok',    label:'TikTok',               desc:'Tarjeta de TikTok en Redes Sociales.' },
     { id:'social-facebook',  label:'Facebook',             desc:'Tarjeta de Facebook en Redes Sociales.' },
