@@ -587,13 +587,13 @@ html[data-lang="en"] [data-es-only]{display:none;}
           stopped actively managing their menu. Copy the block below and
           fill in the photo path, name and blurb for the next one.
         -->
-        <article class="portfolio-card">
+        <article class="portfolio-card" data-portfolio-gallery="portfolio/la-fundacion-cover.jpg,portfolio/la-fundacion-2.jpg,portfolio/la-fundacion-3.jpg">
           <div class="portfolio-card__photo" style="background-image:url('portfolio/la-fundacion-cover.jpg');background-position:top center;">
             <span class="portfolio-card__badge" data-es="Proyecto Anterior" data-en="Past Project">Proyecto Anterior</span>
           </div>
           <div class="portfolio-card__body">
             <h3>La Fundación</h3>
-            <p data-es="El menú original de La Fundación, mi antigua cantina en Mayagüez." data-en="The original menu from La Fundación, my former cantina in Mayagüez.">El menú original de La Fundación, mi antigua cantina en Mayagüez.</p>
+            <p data-es="El menú original de La Fundación, mi antigua cantina en Mayagüez. Click para ver el menú completo." data-en="The original menu from La Fundación, my former cantina in Mayagüez. Click to see the full menu.">El menú original de La Fundación, mi antigua cantina en Mayagüez. Click para ver el menú completo.</p>
           </div>
         </article>
       </div>
@@ -1303,20 +1303,31 @@ html[data-lang="en"] [data-es-only]{display:none;}
     });
   }
 
-  /* ---- Lightbox (Community Gallery) ---- */
+  /* ---- Lightbox (Community Gallery placeholders + Portfolio real photos) ---- */
   function initLightbox(){
-    var items = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox-item]'));
     var lightbox = document.querySelector('[data-lightbox]');
-    if(!items.length || !lightbox) return;
+    if(!lightbox) return;
     var frame = lightbox.querySelector('[data-lightbox-frame]');
     var closeBtn = lightbox.querySelector('[data-lightbox-close]');
     var prevBtn = lightbox.querySelector('[data-lightbox-prev]');
     var nextBtn = lightbox.querySelector('[data-lightbox-next]');
-    var current = 0, lastFocused = null;
+    var current = 0, lastFocused = null, activeSource = null;
 
+    function sourceLength(){
+      return activeSource.type === 'images' ? activeSource.images.length : activeSource.items.length;
+    }
     function render(i){
-      var art = items[i].querySelector('.liquid-art');
+      current = i;
       frame.innerHTML = '';
+      if(activeSource.type === 'images'){
+        var im = document.createElement('img');
+        im.src = activeSource.images[i];
+        im.alt = '';
+        im.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000;';
+        frame.appendChild(im);
+        return;
+      }
+      var art = activeSource.items[i].querySelector('.liquid-art');
       var clone = document.createElement('div');
       clone.className = 'liquid-art';
       clone.style.width = '100%';
@@ -1326,11 +1337,11 @@ html[data-lang="en"] [data-es-only]{display:none;}
         clone.style.setProperty('--a2', getComputedStyle(art).getPropertyValue('--a2'));
       }
       frame.appendChild(clone);
-      current = i;
     }
-    function open(i){
+    function open(source, startAt){
+      activeSource = source;
       lastFocused = document.activeElement;
-      render(i);
+      render(startAt || 0);
       lightbox.classList.add('is-open');
       document.body.style.overflow = 'hidden';
       if(closeBtn) closeBtn.focus();
@@ -1342,20 +1353,39 @@ html[data-lang="en"] [data-es-only]{display:none;}
       document.removeEventListener('keydown', onKey);
       if(lastFocused) lastFocused.focus();
     }
-    function step(delta){ render((current + delta + items.length) % items.length); }
+    function step(delta){ render((current + delta + sourceLength()) % sourceLength()); }
     function onKey(e){
       if(e.key === 'Escape') close();
       if(e.key === 'ArrowRight') step(1);
       if(e.key === 'ArrowLeft') step(-1);
     }
-    items.forEach(function(item, i){
+
+    // Community Gallery placeholders (unchanged behavior)
+    var galleryItems = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox-item]'));
+    galleryItems.forEach(function(item, i){
       item.setAttribute('tabindex','0');
       item.setAttribute('role','button');
-      item.addEventListener('click', function(){ open(i); });
+      item.addEventListener('click', function(){ open({ type:'gallery', items: galleryItems }, i); });
       item.addEventListener('keydown', function(e){
-        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(i); }
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open({ type:'gallery', items: galleryItems }, i); }
       });
     });
+
+    // Portfolio cards: click the cover to browse all photos in that project
+    var portfolioCards = Array.prototype.slice.call(document.querySelectorAll('[data-portfolio-gallery]'));
+    portfolioCards.forEach(function(card){
+      var images = (card.getAttribute('data-portfolio-gallery') || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+      if(!images.length) return;
+      card.style.cursor = 'zoom-in';
+      card.setAttribute('tabindex','0');
+      card.setAttribute('role','button');
+      card.addEventListener('click', function(){ open({ type:'images', images: images }, 0); });
+      card.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open({ type:'images', images: images }, 0); }
+      });
+    });
+
+    if(!galleryItems.length && !portfolioCards.length) return;
     if(closeBtn) closeBtn.addEventListener('click', close);
     if(prevBtn) prevBtn.addEventListener('click', function(){ step(-1); });
     if(nextBtn) nextBtn.addEventListener('click', function(){ step(1); });
