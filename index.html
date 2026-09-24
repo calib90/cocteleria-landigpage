@@ -167,6 +167,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
 .wall-filter{font-family:var(--font-body);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:.8rem 1.1rem;min-height:44px;border:1px solid var(--hair);color:var(--ivory-dim);transition:all .25s var(--ease);}
 .wall-filter.is-active,.wall-filter:hover{border-color:var(--gold);color:var(--gold);}
 .wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--space-sm);align-items:start;}
+.wall-loading{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:.8rem;padding:var(--space-lg) 0;font-family:var(--font-body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ivory-faint);}
+.wall-loading__spinner{width:18px;height:18px;border:2px solid var(--hair);border-top-color:var(--gold);border-radius:50%;animation:wallSpin .8s linear infinite;}
+@keyframes wallSpin{to{transform:rotate(360deg);}}
 .guest-card{border:1px solid var(--hair);background:var(--surface);overflow:hidden;transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);}
 .guest-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.35);}
 .guest-card__photo{aspect-ratio:4/3;position:relative;overflow:hidden;}
@@ -203,6 +206,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
 .menu-card{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--hair);overflow:hidden;}
 .menu-card__visual{aspect-ratio:4/3;position:relative;overflow:hidden;}
 .menu-card__body{padding:var(--space-md);display:flex;flex-direction:column;justify-content:center;}
+
+/* ---- Portfolio (past work) ---- */
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--space-sm);}
+.portfolio-card{border:1px solid var(--hair);background:var(--surface);overflow:hidden;transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);}
+.portfolio-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.35);}
+.portfolio-card__photo{aspect-ratio:4/3;position:relative;overflow:hidden;background-size:cover;background-position:center;}
+.portfolio-card__badge{position:absolute;top:.8rem;left:.8rem;background:var(--gold);color:var(--black);font-family:var(--font-body);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .6rem;}
+.portfolio-card__body{padding:1.2rem 1.3rem;}
+.portfolio-card__body h3{font-family:var(--font-display);font-size:1.3rem;color:var(--ivory);}
+.portfolio-card__body p{margin-top:.5rem;color:var(--ivory-dim);font-size:.95rem;line-height:1.6;}
 
 /* ---- Social cards ---- */
 .social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-sm);}
@@ -301,7 +314,7 @@ html[data-lang="en"] [data-es-only]{display:none;}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
-  .liquid-art,.scroll-indicator__line{animation:none!important;}
+  .liquid-art,.scroll-indicator__line,.wall-loading__spinner{animation:none!important;}
   .reveal{transition:none!important;opacity:1!important;transform:none!important;}
 }
 
@@ -352,6 +365,7 @@ html[data-lang="en"] [data-es-only]{display:none;}
     <a href="#cocktails" data-es="Cocteles" data-en="Cocktails">Cocteles</a>
     <a href="#guest-wall" data-es="Guest Wall" data-en="Guest Wall">Guest Wall</a>
     <a href="#menu" data-es="Menú" data-en="Menu">Menú</a>
+    <a href="#portfolio" data-es="Trabajos" data-en="Portfolio">Trabajos</a>
     <a href="#share" data-es="Comparte" data-en="Share">Comparte</a>
   </nav>
 </header>
@@ -553,6 +567,41 @@ html[data-lang="en"] [data-es-only]{display:none;}
             <a href="https://cocktailmenusg.netlify.app/#featured-section" class="btn btn--solid" data-es="Abrir Menú" data-en="Open Menu">Abrir Menú</a>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+    <section class="section" id="portfolio" aria-label="Trabajos anteriores" data-admin-section="portfolio">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow" data-es="Trabajos Anteriores" data-en="Past Work">Trabajos Anteriores</p>
+        <h2 data-es="Menús que hemos creado" data-en="Menus we've crafted">Menús que hemos creado</h2>
+        <p class="lead" data-es="Un vistazo a colaboraciones pasadas con otros restaurantes y eventos." data-en="A look back at past collaborations with other restaurants and events.">Un vistazo a colaboraciones pasadas con otros restaurantes y eventos.</p>
+      </div>
+
+      <div class="portfolio-grid reveal reveal-d1">
+        <!--
+          PAST WORK CARDS — hardcoded on purpose (no extra fetch call, loads
+          instantly). Add one of these per restaurant/venue once you've
+          stopped actively managing their menu. This section is hidden by
+          default (see ADMIN_SECTIONS / applyVisibilityMap's defaults below)
+          until it has at least one real card — turn it on from the admin
+          panel once you add the first one.
+
+          Copy this block and fill in the photo URL, name and blurb:
+
+        <article class="portfolio-card">
+          <div class="portfolio-card__photo" style="background-image:url('PASTE_PHOTO_URL_HERE')">
+            <span class="portfolio-card__badge" data-es="Proyecto Anterior" data-en="Past Project">Proyecto Anterior</span>
+          </div>
+          <div class="portfolio-card__body">
+            <h3>Trattoria di Nonna</h3>
+            <p data-es="Descripción breve de lo que creaste ahí." data-en="Short description of what you built there.">Descripción breve de lo que creaste ahí.</p>
+          </div>
+        </article>
+
+        -->
       </div>
     </div>
   </section>
@@ -806,8 +855,8 @@ html[data-lang="en"] [data-es-only]{display:none;}
     applyVisibilityMap(stored);
   }
   function applyVisibilityMap(stored){
-    // Community Gallery defaults OFF until real photos exist; everything else defaults ON.
-    var defaults = { gallery: false };
+    // Community Gallery and Portfolio default OFF until there's real content; everything else defaults ON.
+    var defaults = { gallery: false, portfolio: false };
     document.querySelectorAll('[data-admin-section]').forEach(function(section){
       var key = section.getAttribute('data-admin-section');
       var visible = Object.prototype.hasOwnProperty.call(stored, key) ? stored[key] : (defaults[key] !== false);
@@ -823,6 +872,7 @@ html[data-lang="en"] [data-es-only]{display:none;}
     { id:'experiences', label:'Experiencias de Huéspedes', desc:'Historias de huéspedes en su propia voz.' },
     { id:'gallery',     label:'Galería de la Comunidad',   desc:'Vacía por ahora — oculta hasta tener fotos reales.' },
     { id:'menu',        label:'Menú',                      desc:'Bloque que enlaza al menú digital.' },
+    { id:'portfolio',   label:'Trabajos Anteriores',       desc:'Vacío por ahora — activa cuando agregues la primera tarjeta.' },
     { id:'social-instagram', label:'Instagram',           desc:'Tarjeta de Instagram en Redes Sociales.' },
     { id:'social-tiktok',    label:'TikTok',               desc:'Tarjeta de TikTok en Redes Sociales.' },
     { id:'social-facebook',  label:'Facebook',             desc:'Tarjeta de Facebook en Redes Sociales.' },
@@ -947,7 +997,16 @@ html[data-lang="en"] [data-es-only]{display:none;}
       // straight from the sheet instead.
       grid.querySelectorAll('.guest-card:not(.guest-card--dynamic)').forEach(function(el){ el.style.display = 'none'; });
       grid.querySelectorAll('.guest-card--dynamic').forEach(function(el){ el.remove(); });
+
+      var loader = document.createElement('div');
+      loader.className = 'wall-loading guest-card--dynamic';
+      loader.innerHTML = '<span class="wall-loading__spinner" aria-hidden="true"></span>' +
+        '<span data-es="Cargando reseñas…" data-en="Loading reviews…">Cargando reseñas…</span>';
+      grid.appendChild(loader);
+
       sheetsGet('getGuestWall', function(list){
+        var stillLoading = grid.querySelector('.wall-loading');
+        if(stillLoading) stillLoading.remove();
         (list || []).forEach(function(entry){ appendGuestCard(grid, entry, 'guest-card--dynamic'); });
       });
       return;
